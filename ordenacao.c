@@ -8,7 +8,7 @@
 // Funcoes
 void aviso_pendente(char *nome, int etapa);    // avisa que a opção ainda não foi implementada
 void limpa_buffer(void);                       // descarta o que sobrou no teclado
-
+void imprimir_vetor(int v[], int n);
 // Menu provisório para testar as funções de ordenação
 // Cada case chama aviso_pendente() até a etapa correspondente ficar pronta;
 // aí trocamos essa linha pela chamada da função real.
@@ -33,7 +33,8 @@ int main(){
 
         switch (opcao) {
             case 1:     // gera ordenado / inverso / aleatório e imprime
-                aviso_pendente("Geracao dos vetores", 1);
+                int teste[5] = {4, 8, 15, 16, 23};   // vetor fixo só para testar a impressão
+                imprimir_vetor(teste, 5);
                 break;
 
             case 2:     // ordena um vetor de teste com Bubblesort
@@ -63,6 +64,14 @@ int main(){
             default:
                 printf("Opcao invalida!\n");
         }
+    }
+}
+
+
+// Imprimir o vetor
+void imprimir_vetor(int v[], int n){
+    for (int i = 0; i < n; i++){
+        printf("\n%d \n", v[i]);
     }
 }
 
