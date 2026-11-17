@@ -3,6 +3,7 @@
 #include <time.h>             // clock() - medição do tempo (Etapa 2)
 
 // Constantes
+#define SEMENTE 42
 // (os #define de métodos, cenários e tamanhos entram a partir da Etapa 1)
 
 // Funcoes
@@ -11,8 +12,8 @@ void limpa_buffer(void);                       // descarta o que sobrou no tecla
 void imprimir_vetor(int v[], int n);           // imprimi o vetor
 void gerar_ordenado(int v[], int n);           // preenche com 1, 2, ..., n
 void gerar_inverso(int v[], int n);            // preenche com n, ..., 2, 1
-
-
+void gerar_aleatorio(int v[], int n);  // 1..n embaralhados, sem repetição
+int esta_ordenado(int v[], int n);     // 1 = crescente, 0 = não está
 
 
 
@@ -47,12 +48,22 @@ int main(){
             case 1:     
                 int teste[10];                 
                 gerar_ordenado(teste, 10);
-                printf("\nOrdenado: \n");
+                printf("Ordenado: ");
                 imprimir_vetor(teste, 10);
 
+                printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
+
                 gerar_inverso(teste, 10);
-                printf("\nInverso:  \n");
+                printf("Inverso:  ");
                 imprimir_vetor(teste, 10);
+
+                printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
+
+                gerar_aleatorio(teste, 10);
+                printf("Aleatorio: ");
+                imprimir_vetor(teste, 10);
+
+                printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
                 break;
 
             case 2:     // ordena um vetor de teste com Bubblesort
@@ -85,6 +96,32 @@ int main(){
     }
 }
 
+// Retorna 1 se estiver ordenado e 0 no primeiro par fora de ordem
+// Confere se o vetor está em ordem crescente
+int esta_ordenado(int v[], int n){
+    for (int i = 0; i < n - 1; i++){    // até n-2: compara v[i] com o vizinho v[i+1]
+        if (v[i] > v[i + 1])
+            return 0;                   // achou par fora de ordem, já pode parar
+    }
+    return 1;                           // percorreu tudo sem achar erro
+}
+
+// preenche o vetor de forma aleatoria
+void gerar_aleatorio(int v[], int n){
+    int j, aux;
+
+    gerar_ordenado(v, n);
+    srand(SEMENTE);
+
+    for (int i = n - 1; i > 0; i--){
+        j = ((rand() % 32768) * 32768 + rand() % 32768) % (i + 1);
+
+        aux = v[i];
+        v[i] = v[j];
+        v[j] = aux;
+    }
+}
+
 
 // preenche o vetor sem repetir numeros de forma ordenada
 void gerar_ordenado(int v[], int n){
@@ -106,6 +143,7 @@ void imprimir_vetor(int v[], int n){
     for (int i = 0; i < n; i++){
         printf("%d ", v[i]);
     }
+    printf("\n");
 }
 
 // Descarta tudo o que sobrou no buffer do teclado até o Enter
