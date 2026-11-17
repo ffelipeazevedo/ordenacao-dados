@@ -8,7 +8,19 @@
 // Funcoes
 void aviso_pendente(char *nome, int etapa);    // avisa que a opção ainda não foi implementada
 void limpa_buffer(void);                       // descarta o que sobrou no teclado
-void imprimir_vetor(int v[], int n);
+void imprimir_vetor(int v[], int n);           // imprimi o vetor
+void gerar_ordenado(int v[], int n);           // preenche com 1, 2, ..., n
+void gerar_inverso(int v[], int n);            // preenche com n, ..., 2, 1
+
+
+
+
+
+
+
+
+
+
 // Menu provisório para testar as funções de ordenação
 // Cada case chama aviso_pendente() até a etapa correspondente ficar pronta;
 // aí trocamos essa linha pela chamada da função real.
@@ -32,9 +44,15 @@ int main(){
         limpa_buffer();
 
         switch (opcao) {
-            case 1:     // gera ordenado / inverso / aleatório e imprime
-                int teste[5] = {4, 8, 15, 16, 23};   // vetor fixo só para testar a impressão
-                imprimir_vetor(teste, 5);
+            case 1:     
+                int teste[10];                 
+                gerar_ordenado(teste, 10);
+                printf("\nOrdenado: \n");
+                imprimir_vetor(teste, 10);
+
+                gerar_inverso(teste, 10);
+                printf("\nInverso:  \n");
+                imprimir_vetor(teste, 10);
                 break;
 
             case 2:     // ordena um vetor de teste com Bubblesort
@@ -68,10 +86,25 @@ int main(){
 }
 
 
+// preenche o vetor sem repetir numeros de forma ordenada
+void gerar_ordenado(int v[], int n){
+    for (int i = 0; i < n; i++){
+        v[i] = i + 1;
+    }
+}
+
+// preenche o vetor sem repetir numeros de forma inversa
+void gerar_inverso(int v[], int n){
+    for (int i = 0; i < n; i++){
+        v[i] = n - i;
+    }
+}
+
+
 // Imprimir o vetor
 void imprimir_vetor(int v[], int n){
     for (int i = 0; i < n; i++){
-        printf("\n%d \n", v[i]);
+        printf("%d ", v[i]);
     }
 }
 
