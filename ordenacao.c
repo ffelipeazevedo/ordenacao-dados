@@ -23,8 +23,8 @@ void gerar_inverso(int v[], int n);            // preenche com n, ..., 2, 1
 void gerar_aleatorio(int v[], int n);          // 1..n embaralhados, sem repetição
 int esta_ordenado(int v[], int n);             // 1 = crescente, 0 = não está ordenado
 void gerar_vetor(int cenario, int v[], int n); // chama o gerador do cenário
-void zerar_contadores(void);                 // zera comparacoes e permutacoes
-
+void zerar_contadores(void);                   // zera comparacoes e permutacoes
+void Bolha(int A[], int n);                    // Bubblesort (material da professora)
 
 
 
@@ -65,7 +65,22 @@ int main(){
                 break;
 
             case 2:     // ordena um vetor de teste com Bubblesort
-                aviso_pendente("Bubblesort", 3);
+                        // testa o Bubblesort nos 3 cenários
+                teste[10];
+
+                for (int c = ORDENADO; c <= ALEATORIO; c++){
+                    gerar_vetor(c, teste, 10);
+                    printf("\nCenario %d - antes:  ", c);
+                    imprimir_vetor(teste, 10);
+
+                    zerar_contadores();                  // começa a contagem do zero
+                    Bolha(teste, 10);
+
+                    printf("Cenario %d - depois: ", c);
+                    imprimir_vetor(teste, 10);
+                    printf("Comparacoes: %lld | Permutacoes: %lld | Ordenado? %s\n",
+                        comparacoes, permutacoes, esta_ordenado(teste, 10) ? "sim" : "nao");
+                }
                 break;
 
             case 3:     // ordena um vetor de teste com Selection Sort
@@ -93,6 +108,24 @@ int main(){
         }
     }
 }
+
+// Bubblesort - código do material da professora
+void Bolha(int A[], int n){
+    int i, j, troca;
+
+    for (i = n - 1; i >= 1; i--){            // a cada passada, o maior vai para a posição i
+        for (j = 0; j < i; j++){             // compara os vizinhos até a posição i
+            comparacoes++;                   // conta a comparação A[j] > A[j+1]
+            if (A[j] > A[j + 1]){            // fora de ordem: troca
+                troca = A[j];
+                A[j] = A[j + 1];
+                A[j + 1] = troca;
+                permutacoes++;               // conta a troca
+            }
+        }
+    }
+}
+
 
 // Zera os contadores antes de cada ordenação
 // Sem isso, a contagem de um vetor somaria com a do anterior
