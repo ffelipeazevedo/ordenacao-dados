@@ -7,7 +7,11 @@
 #define ORDENADO  1                   // cenário: inicialmente ordenado
 #define INVERSO   2                   // cenário: inicialmente ordenado inversamente
 #define ALEATORIO 3                   // cenário: dados em posições aleatórias
-
+ // métodos de ordenação
+#define BUBBLE    1                  
+#define SELECTION 2
+#define INSERTION 3
+#define SHELL     4
 
 // Variaveis globais
 long long comparacoes = 0;    // comparações entre elementos do vetor
@@ -25,7 +29,9 @@ int esta_ordenado(int v[], int n);             // 1 = crescente, 0 = não está 
 void gerar_vetor(int cenario, int v[], int n); // chama o gerador do cenário
 void zerar_contadores(void);                   // zera comparacoes e permutacoes
 void Bolha(int A[], int n);                    // Bubblesort (material da professora)
-
+void ordenar(int metodo, int v[], int n);            // chama o método escolhido
+double medir_ordenacao(int metodo, int v[], int n);  // ordena e devolve o tempo em segundos
+void testar_metodo(int metodo);                      // teste pelo menu: 3 cenários de um tamanho
 
 
 
@@ -66,21 +72,7 @@ int main(){
 
             case 2:     // ordena um vetor de teste com Bubblesort
                         // testa o Bubblesort nos 3 cenários
-                teste[10];
-
-                for (int c = ORDENADO; c <= ALEATORIO; c++){
-                    gerar_vetor(c, teste, 10);
-                    printf("\nCenario %d - antes:  ", c);
-                    imprimir_vetor(teste, 10);
-
-                    zerar_contadores();                  // começa a contagem do zero
-                    Bolha(teste, 10);
-
-                    printf("Cenario %d - depois: ", c);
-                    imprimir_vetor(teste, 10);
-                    printf("Comparacoes: %lld | Permutacoes: %lld | Ordenado? %s\n",
-                        comparacoes, permutacoes, esta_ordenado(teste, 10) ? "sim" : "nao");
-                }
+                testar_metodo(BUBBLE);
                 break;
 
             case 3:     // ordena um vetor de teste com Selection Sort
@@ -126,6 +118,72 @@ void Bolha(int A[], int n){
     }
 }
 
+// Chama o método de ordenação de acordo com o número (BUBBLE, SELECTION, ...)
+// Cada método novo ganha um case aqui
+void ordenar(int metodo, int v[], int n){
+    switch (metodo) {
+        case BUBBLE:
+            Bolha(v, n);
+            break;
+    }
+}
+
+// Zera os contadores, cronometra a ordenação e devolve o tempo gasto em segundos
+double medir_ordenacao(int metodo, int v[], int n){
+    clock_t inicio, fim;
+
+    zerar_contadores();             // contagem começa do zero para este vetor
+    inicio = clock();               // marca o "relógio" antes de ordenar
+    ordenar(metodo, v, n);
+    fim = clock();                  // marca depois
+
+    // clock() conta "tiques"; dividir por CLOCKS_PER_SEC converte para segundos
+    // o (double) evita divisão inteira (que daria 0 para tempos menores que 1 s)
+    return (double)(fim - inicio) / CLOCKS_PER_SEC;
+}
+
+// Teste pelo menu: pede o tamanho, aloca o vetor e ordena os 3 cenários
+// Só imprime o vetor se for pequeno (até 20 elementos)
+void testar_metodo(int metodo){
+    int n;                  // tamanho do vetor informado pelo usuário
+    int *v;                 // vetor dinâmico
+    double tempo;           // tempo gasto na ordenação
+
+    do {    // repete até digitar um tamanho válido
+        printf("Tamanho do vetor (minimo 2): ");
+        if (scanf("%d", &n) != 1)
+            n = 0;
+        limpa_buffer();
+        if (n < 2)
+            printf("Tamanho invalido!\n");
+    } while (n < 2);
+
+    v = (int*)malloc(n * sizeof(int));      // aloca n inteiros
+    if (!v){
+        printf("Problema de alocacao\n");
+        return;
+    }
+
+    for (int c = ORDENADO; c <= ALEATORIO; c++){
+        gerar_vetor(c, v, n);
+        printf("\nCenario %d\n", c);
+        if (n <= 20){
+            printf("Antes:  ");
+            imprimir_vetor(v, n);
+        }
+
+        tempo = medir_ordenacao(metodo, v, n);
+
+        if (n <= 20){
+            printf("Depois: ");
+            imprimir_vetor(v, n);
+        }
+        printf("Comparacoes: %lld | Permutacoes: %lld | Tempo: %f s | Ordenado? %s\n",
+               comparacoes, permutacoes, tempo, esta_ordenado(v, n) ? "sim" : "nao");
+    }
+
+    free(v);                // devolve a memória
+}
 
 // Zera os contadores antes de cada ordenação
 // Sem isso, a contagem de um vetor somaria com a do anterior
