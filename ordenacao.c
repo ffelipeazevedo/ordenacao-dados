@@ -4,6 +4,14 @@
 
 // Constantes
 #define SEMENTE 42
+#define ORDENADO  1                   // cenário: inicialmente ordenado
+#define INVERSO   2                   // cenário: inicialmente ordenado inversamente
+#define ALEATORIO 3                   // cenário: dados em posições aleatórias
+
+
+// Variaveis globais
+long long comparacoes = 0;    // comparações entre elementos do vetor
+long long permutacoes = 0;    // trocas/deslocamentos de elementos do vetor
 // (os #define de métodos, cenários e tamanhos entram a partir da Etapa 1)
 
 // Funcoes
@@ -12,10 +20,10 @@ void limpa_buffer(void);                       // descarta o que sobrou no tecla
 void imprimir_vetor(int v[], int n);           // imprimi o vetor
 void gerar_ordenado(int v[], int n);           // preenche com 1, 2, ..., n
 void gerar_inverso(int v[], int n);            // preenche com n, ..., 2, 1
-void gerar_aleatorio(int v[], int n);  // 1..n embaralhados, sem repetição
-int esta_ordenado(int v[], int n);     // 1 = crescente, 0 = não está
-
-
+void gerar_aleatorio(int v[], int n);          // 1..n embaralhados, sem repetição
+int esta_ordenado(int v[], int n);             // 1 = crescente, 0 = não está ordenado
+void gerar_vetor(int cenario, int v[], int n); // chama o gerador do cenário
+void zerar_contadores(void);                 // zera comparacoes e permutacoes
 
 
 
@@ -45,25 +53,15 @@ int main(){
         limpa_buffer();
 
         switch (opcao) {
-            case 1:     
-                int teste[10];                 
-                gerar_ordenado(teste, 10);
-                printf("Ordenado: ");
-                imprimir_vetor(teste, 10);
+            case 1:  
+                int teste[10];                
 
-                printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
-
-                gerar_inverso(teste, 10);
-                printf("Inverso:  ");
-                imprimir_vetor(teste, 10);
-
-                printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
-
-                gerar_aleatorio(teste, 10);
-                printf("Aleatorio: ");
-                imprimir_vetor(teste, 10);
-
-                printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
+                for (int c = ORDENADO; c <= ALEATORIO; c++){
+                    gerar_vetor(c, teste, 10);
+                    printf("\nCenario %d:\n", c);
+                    imprimir_vetor(teste, 10);
+                    printf("Esta ordenado? %s\n", esta_ordenado(teste, 10) ? "sim" : "nao");
+                }
                 break;
 
             case 2:     // ordena um vetor de teste com Bubblesort
@@ -93,6 +91,28 @@ int main(){
             default:
                 printf("Opcao invalida!\n");
         }
+    }
+}
+
+// Zera os contadores antes de cada ordenação
+// Sem isso, a contagem de um vetor somaria com a do anterior
+void zerar_contadores(void){
+    comparacoes = 0;
+    permutacoes = 0;
+}
+
+// preenche o vetor de acordo com o cenário (ORDENADO 1,  INVERSO 2 ou ALEATORIO 3)
+void gerar_vetor(int cenario, int v[], int n){
+    switch (cenario) {
+        case ORDENADO:
+            gerar_ordenado(v, n);
+            break;
+        case INVERSO:
+            gerar_inverso(v, n);
+            break;
+        case ALEATORIO:
+            gerar_aleatorio(v, n);
+            break;
     }
 }
 
