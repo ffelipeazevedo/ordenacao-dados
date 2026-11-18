@@ -28,13 +28,13 @@ void gerar_aleatorio(int v[], int n);          // 1..n embaralhados, sem repeti�
 int esta_ordenado(int v[], int n);             // 1 = crescente, 0 = não está ordenado
 void gerar_vetor(int cenario, int v[], int n); // chama o gerador do cenário
 void zerar_contadores(void);                   // zera comparacoes e permutacoes
-void Bolha(int A[], int n);                    // Bubblesort (material da professora)
 void ordenar(int metodo, int v[], int n);            // chama o método escolhido
 double medir_ordenacao(int metodo, int v[], int n);  // ordena e devolve o tempo em segundos
 void testar_metodo(int metodo);                      // teste pelo menu: 3 cenários de um tamanho
+void Bolha(int A[], int n);                          // Bubblesort (material da professora)
 void Selecao_Direta(int A[], int n);                 // Selection Sort (material da professora)
 void InsertionSort(int A[], int n);                  // Insertion Sort (material da professora)
-
+void shellsort(int A[], int n);                      // Shell Sort (material da professora)
 
 // Menu provisório para testar as funções de ordenação
 // Cada case chama aviso_pendente() até a etapa correspondente ficar pronta;
@@ -84,7 +84,7 @@ int main(){
                 break;
 
             case 5:     // ordena um vetor de teste com Shell Sort
-                aviso_pendente("Shell Sort", 6);
+                testar_metodo(SHELL);
                 break;
 
             case 6:     // 4 métodos x 6 tamanhos x 3 cenários -> arquivo .txt
@@ -115,6 +115,9 @@ void ordenar(int metodo, int v[], int n){
             break;
         case INSERTION:
             InsertionSort(v, n);
+            break;
+        case SHELL:
+            shellsort(v, n);
             break;
     }
 }
@@ -174,6 +177,34 @@ void InsertionSort(int A[], int n){
                                              // (se i == -1, o && nem avaliou A[i] > aux)
         A[i + 1] = aux;                      // coloca aux no buraco aberto
         j = j + 1;
+    }
+}
+
+// Shell Sort - código do material da professora
+void shellsort(int A[], int n){
+    int i, j, h, aux;
+
+    for (h = 1; h < n; h = 3 * h + 1);       // calcula o h inicial: 1, 4, 13, 40, ... até passar de n
+
+    while (h > 1){
+        h = (h - 1) / 3;                     // atualiza o valor de h (... 13 -> 4 -> 1)
+        for (i = h; i < n; i++){             // insertion com distância h
+            aux = A[i];
+            j = i;
+            // efetua comparações entre elementos com distância h:
+            while (A[j - h] > aux){
+                comparacoes++;               // comparação A[j-h] > aux deu verdadeiro
+                A[j] = A[j - h];             // desloca o maior h posições para a direita
+                permutacoes++;               // conta o deslocamento
+                j -= h;
+                if (j < h)                   // não há mais elemento a h posições à esquerda
+                    break;
+            }
+            if (j >= h)                      // o laço parou porque A[j-h] > aux deu falso:
+                comparacoes++;               // essa comparação também aconteceu
+                                             // (se saiu pelo break, a condição não foi avaliada)
+            A[j] = aux;                      // coloca aux no lugar
+        }
     }
 }
 
