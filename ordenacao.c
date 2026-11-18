@@ -33,7 +33,7 @@ void ordenar(int metodo, int v[], int n);            // chama o método escolhid
 double medir_ordenacao(int metodo, int v[], int n);  // ordena e devolve o tempo em segundos
 void testar_metodo(int metodo);                      // teste pelo menu: 3 cenários de um tamanho
 void Selecao_Direta(int A[], int n);                 // Selection Sort (material da professora)
-
+void InsertionSort(int A[], int n);                  // Insertion Sort (material da professora)
 
 
 // Menu provisório para testar as funções de ordenação
@@ -80,7 +80,7 @@ int main(){
                 break;
 
             case 4:     // ordena um vetor de teste com Insertion Sort
-                aviso_pendente("Insertion Sort", 5);
+                testar_metodo(INSERTION);
                 break;
 
             case 5:     // ordena um vetor de teste com Shell Sort
@@ -101,6 +101,24 @@ int main(){
     }
 }
 
+
+
+// Chama o método de ordenação de acordo com o número (BUBBLE, SELECTION, ...)
+// Cada método novo ganha um case aqui
+void ordenar(int metodo, int v[], int n){
+    switch (metodo) {
+        case BUBBLE:
+            Bolha(v, n);
+            break;
+        case SELECTION:
+            Selecao_Direta(v, n);
+            break;
+        case INSERTION:
+            InsertionSort(v, n);
+            break;
+    }
+}
+
 // Bubblesort - código do material da professora
 void Bolha(int A[], int n){
     int i, j, troca;
@@ -115,19 +133,6 @@ void Bolha(int A[], int n){
                 permutacoes++;               // conta a troca
             }
         }
-    }
-}
-
-// Chama o método de ordenação de acordo com o número (BUBBLE, SELECTION, ...)
-// Cada método novo ganha um case aqui
-void ordenar(int metodo, int v[], int n){
-    switch (metodo) {
-        case BUBBLE:
-            Bolha(v, n);
-            break;
-        case SELECTION:
-            Selecao_Direta(v, n);
-            break;
     }
 }
 
@@ -146,6 +151,29 @@ void Selecao_Direta(int A[], int n){
         A[i] = A[menor];
         A[menor] = aux;
         permutacoes++;                       // conta a troca (1 por passada)
+    }
+}
+
+// Insertion Sort - código do material da professora
+void InsertionSort(int A[], int n){
+    int i = 0;
+    int j = 1;
+    int aux = 0;
+
+    while (j < n){                           // A[0..j-1] já está ordenado
+        aux = A[j];                          // elemento a ser inserido
+        i = j - 1;
+        while ((i >= 0) && (A[i] > aux)){    // desloca os maiores que aux para a direita
+            comparacoes++;                   // comparação A[i] > aux deu verdadeiro
+            A[i + 1] = A[i];
+            permutacoes++;                   // conta o deslocamento
+            i = i - 1;
+        }
+        if (i >= 0)                          // o laço parou porque A[i] > aux deu falso:
+            comparacoes++;                   // essa comparação também aconteceu
+                                             // (se i == -1, o && nem avaliou A[i] > aux)
+        A[i + 1] = aux;                      // coloca aux no buraco aberto
+        j = j + 1;
     }
 }
 
