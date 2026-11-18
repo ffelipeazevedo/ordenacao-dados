@@ -32,7 +32,7 @@ void Bolha(int A[], int n);                    // Bubblesort (material da profes
 void ordenar(int metodo, int v[], int n);            // chama o método escolhido
 double medir_ordenacao(int metodo, int v[], int n);  // ordena e devolve o tempo em segundos
 void testar_metodo(int metodo);                      // teste pelo menu: 3 cenários de um tamanho
-
+void Selecao_Direta(int A[], int n);                 // Selection Sort (material da professora)
 
 
 
@@ -76,7 +76,7 @@ int main(){
                 break;
 
             case 3:     // ordena um vetor de teste com Selection Sort
-                aviso_pendente("Selection Sort", 4);
+                testar_metodo(SELECTION);
                 break;
 
             case 4:     // ordena um vetor de teste com Insertion Sort
@@ -125,6 +125,27 @@ void ordenar(int metodo, int v[], int n){
         case BUBBLE:
             Bolha(v, n);
             break;
+        case SELECTION:
+            Selecao_Direta(v, n);
+            break;
+    }
+}
+
+// Selection Sort - código do material da professora
+void Selecao_Direta(int A[], int n){
+    int i, j, aux, menor;
+
+    for (i = 0; i < n - 1; i++){             // posição i recebe o menor do trecho i..n-1
+        menor = i;                           // supõe que o menor é o próprio A[i]
+        for (j = i + 1; j < n; j++){         // procura um menor no resto do vetor
+            comparacoes++;                   // conta a comparação A[j] < A[menor]
+            if (A[j] < A[menor])
+                menor = j;                   // guarda só a POSIÇÃO do menor
+        }
+        aux = A[i];                          // troca A[i] com o menor encontrado
+        A[i] = A[menor];
+        A[menor] = aux;
+        permutacoes++;                       // conta a troca (1 por passada)
     }
 }
 
