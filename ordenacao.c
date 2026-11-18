@@ -7,6 +7,7 @@
 #define ORDENADO  1                   // cenário: inicialmente ordenado
 #define INVERSO   2                   // cenário: inicialmente ordenado inversamente
 #define ALEATORIO 3                   // cenário: dados em posições aleatórias
+#define QTD_TAMANHOS 6                // 10, 100, 1.000, 10.000, 100.000, 1.000.000
  // métodos de ordenação
 #define BUBBLE    1                  
 #define SELECTION 2
@@ -19,15 +20,15 @@ long long permutacoes = 0;    // trocas/deslocamentos de elementos do vetor
 // (os #define de métodos, cenários e tamanhos entram a partir da Etapa 1)
 
 // Funcoes
-void aviso_pendente(char *nome, int etapa);    // avisa que a opção ainda não foi implementada
-void limpa_buffer(void);                       // descarta o que sobrou no teclado
-void imprimir_vetor(int v[], int n);           // imprimi o vetor
-void gerar_ordenado(int v[], int n);           // preenche com 1, 2, ..., n
-void gerar_inverso(int v[], int n);            // preenche com n, ..., 2, 1
-void gerar_aleatorio(int v[], int n);          // 1..n embaralhados, sem repetição
-int esta_ordenado(int v[], int n);             // 1 = crescente, 0 = não está ordenado
-void gerar_vetor(int cenario, int v[], int n); // chama o gerador do cenário
-void zerar_contadores(void);                   // zera comparacoes e permutacoes
+void aviso_pendente(char *nome, int etapa);          // avisa que a opção ainda não foi implementada
+void limpa_buffer(void);                             // descarta o que sobrou no teclado
+void imprimir_vetor(int v[], int n);                 // imprimi o vetor
+void gerar_ordenado(int v[], int n);                 // preenche com 1, 2, ..., n
+void gerar_inverso(int v[], int n);                  // preenche com n, ..., 2, 1
+void gerar_aleatorio(int v[], int n);                // 1..n embaralhados, sem repetição
+int esta_ordenado(int v[], int n);                   // 1 = crescente, 0 = não está ordenado
+void gerar_vetor(int cenario, int v[], int n);       // chama o gerador do cenário
+void zerar_contadores(void);                         // zera comparacoes e permutacoes
 void ordenar(int metodo, int v[], int n);            // chama o método escolhido
 double medir_ordenacao(int metodo, int v[], int n);  // ordena e devolve o tempo em segundos
 void testar_metodo(int metodo);                      // teste pelo menu: 3 cenários de um tamanho
@@ -35,6 +36,10 @@ void Bolha(int A[], int n);                          // Bubblesort (material da 
 void Selecao_Direta(int A[], int n);                 // Selection Sort (material da professora)
 void InsertionSort(int A[], int n);                  // Insertion Sort (material da professora)
 void shellsort(int A[], int n);                      // Shell Sort (material da professora)
+char *nome_metodo(int metodo);                       // número do método -> nome para o arquivo
+char *nome_cenario(int cenario);                     // número do cenário -> texto do enunciado
+void gravar_resultado(FILE *arq, int n, int cenario, long long comp, long long perm, double tempo); // grava 1 bloco no .txt
+void rodar_experimento_completo(void);               // 4 métodos x 6 tamanhos x 3 cenários -> .txt
 
 // Menu provisório para testar as funções de ordenação
 // Cada case chama aviso_pendente() até a etapa correspondente ficar pronta;
@@ -101,10 +106,36 @@ int main(){
     }
 }
 
+// Devolve o nome do método para gravar no arquivo
+char *nome_metodo(int metodo){
+    switch (metodo) {
+        case BUBBLE:    return "Bubblesort";
+        case SELECTION: return "Selection Sort";
+        case INSERTION: return "Insertion Sort";
+        case SHELL:     return "Shell Sort";
+    }
+    return "Desconhecido";
+}
 
+// Devolve a descrição do cenário exatamente como no enunciado
+char *nome_cenario(int cenario){
+    switch (cenario) {
+        case ORDENADO:  return "inicialmente ordenado";
+        case INVERSO:   return "inicialmente ordenado inversamente";
+        case ALEATORIO: return "com dados posicionados de forma aleatória";
+    }
+    return "desconhecido";
+}
+
+// Grava no arquivo o bloco de um conjunto, no formato pedido no enunciado
+void gravar_resultado(FILE *arq, int n, int cenario, long long comp, long long perm, double tempo){
+    fprintf(arq, "Conjunto com %d elementos - %s\n", n, nome_cenario(cenario));
+    fprintf(arq, "Quantidade de Comparações: %lld\n", comp);
+    fprintf(arq, "Quantidades de Permutações: %lld\n", perm);
+    fprintf(arq, "Tempo gasto para ordenação: %f segundos\n\n", tempo);  
+}
 
 // Chama o método de ordenação de acordo com o número (BUBBLE, SELECTION, ...)
-// Cada método novo ganha um case aqui
 void ordenar(int metodo, int v[], int n){
     switch (metodo) {
         case BUBBLE:
